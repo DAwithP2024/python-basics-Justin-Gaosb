@@ -1,3 +1,4 @@
+# Products available in the store by category
 products = {
     "IT Products": [
         ("Laptop", 1000),
@@ -29,30 +30,35 @@ products = {
     ]
 }
 
+
 def display_sorted_products(products_list, sort_order):
     return sorted(products_list, key=lambda x: x[1], reverse=(sort_order == "desc"))
+
 
 def display_products(products_list):
     for idx, (product, price) in enumerate(products_list, start=1):
         print(f"{idx}. {product} - ${price}")
 
-def get_category_index():
+
+def display_categories():
+    category_list = list(products.keys())
     print("Categories:")
-    for idx, category in enumerate(products.keys(), start=1):
-        print(f"{idx}. {category}")
-    try:
-        category_index = int(input("Please select a category by number: ")) - 1
-        if 0 <= category_index < len(products):
-            return category_index
-        else:
-            print("Invalid category number. Try again.")
-            return None
-    except ValueError:
-        print("Please enter a valid number.")
-        return None
+    for index, category in enumerate(category_list, start=1):
+        print(f"{index}. {category}")
+    while True:
+        try:
+            choice = int(input("Please select a category by number: ")) - 1
+            if 0 <= choice < len(category_list):
+                return choice
+            else:
+                print("Invalid category number. Try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+
 
 def add_to_cart(cart, product, quantity):
     cart.append((product[0], product[1], quantity))
+
 
 def display_cart(cart):
     total_cost = 0
@@ -64,6 +70,7 @@ def display_cart(cart):
     print(f"Total cost: ${total_cost}")
     return total_cost
 
+
 def generate_receipt(name, email, cart, total_cost, address):
     print(f"Customer: {name}\nEmail: {email}")
     print("Items Purchased:")
@@ -74,28 +81,33 @@ def generate_receipt(name, email, cart, total_cost, address):
     print("Your items will be delivered in 3 days.")
     print("Payment will be accepted upon delivery.")
 
+
 def validate_name(name):
     parts = name.split()
     return len(parts) == 2 and all(part.isalpha() for part in parts)
 
+
 def validate_email(email):
     return "@" in email and email.count("@") == 1
+
 
 def main():
     cart = []
     
-    name = input("Enter your name (first and last name): ")
-    while not validate_name(name):
-        print("Invalid name. Please enter a valid first and last name.")
+    while True:
         name = input("Enter your name (first and last name): ")
-
-    email = input("Enter your email: ")
-    while not validate_email(email):
-        print("Invalid email. Please enter a valid email.")
+        if validate_name(name):
+            break
+        print("Invalid name. Please enter a valid first and last name.")
+    
+    while True:
         email = input("Enter your email: ")
+        if validate_email(email):
+            break
+        print("Invalid email. Please enter a valid email.")
 
     while True:
-        category_index = get_category_index()
+        category_index = display_categories()
         if category_index is None:
             continue
         
@@ -138,10 +150,12 @@ def main():
                     
             elif choice == '3': 
                 break
+                
             elif choice == '4': 
                 if cart:
-                    total_cost = display_cart(cart)
+                    display_cart(cart)
                     address = input("Enter your delivery address: ")
+                    total_cost = display_cart(cart)
                     generate_receipt(name, email, cart, total_cost, address)
                 else:
                     print("Thank you for using our portal. Hope you buy something next time!")
